@@ -21,25 +21,40 @@ namespace ServerManagerPiratia
             dataGridView1.EnableHeadersVisualStyles = false;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
             if (openFileDialog1.ShowDialog() == DialogResult.Cancel)
                 return;
             // получаем выбранный файл
             string filename = openFileDialog1.FileName;
             myTextBox1.Text = filename;
-            string[] listItem = ReadFile.ReadTxtFile(filename);
-            for (int i = 0; i < listItem.Length; i++)
+
+            using (StreamReader sr = new StreamReader(filename))
             {
-                string[] testitem = listItem[i].Split('\t');
-                try
+                string? line;
+                while ((line = await sr.ReadLineAsync()) != null)
                 {
-                    dataGridView1.Rows.Add(testitem[0], testitem[1]);
-                }
-                catch { IndexOutOfRangeException ex; }
-                {
+                    string[] testitem = line.Split('\t');
+                    try
+                    {
+                        dataGridView1.Rows.Add(testitem[0], testitem[1]);
+                    }
+                    catch { IndexOutOfRangeException ex; }
                 }
             }
+            // Старый код
+            //string[] listItem = ReadFile.ReadTxtFile(filename);
+            //for (int i = 0; i < listItem.Length; i++)
+            //{
+            //    string[] testitem = listItem[i].Split('\t');
+            //    try
+            //    {
+            //        dataGridView1.Rows.Add(testitem[0], testitem[1]);
+            //    }
+            //    catch { IndexOutOfRangeException ex; }
+            //    {
+            //    }
+            //}
         }
 
         private void button2_Click(object sender, EventArgs e)
